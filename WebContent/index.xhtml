@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+<head>
+<meta charset="UTF-8"></meta>
+<title>Cardápio Digital</title>
+</head>
+<h:body>
+		<h1>Listagem de Itens do Cardápio</h1>
+		
+		<h:messages globalOnly="true"/>
+		
+		<h:link value="Novo lembrete" outcome="adicionar"/>
+		
+		<h:dataTable value="#{itemBean.itens}" var="item">
+			<h:column>
+				<f:facet name="header">ID</f:facet>
+				#{item.id}
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				#{item.nome}
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Descrição</f:facet>
+				#{item.descricao}
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Preço</f:facet>
+				#{item.preco}
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Operações</f:facet>
+				<h:form>
+					<h:commandButton value="Editar" action="#{itemBean.carregarEdicao(item)}" />
+					<h:commandButton value="Excluir" action="#{itemBean.excluir(item)}" />
+				</h:form>
+			</h:column>
+			
+		</h:dataTable>
+</h:body>
+</html>

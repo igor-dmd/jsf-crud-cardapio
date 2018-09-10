@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <title>Adicionar item</title>
+</h:head>
+<h:body>
+    <h3>Adicionar item</h3>
+
+    <h:form>
+        <h:panelGrid columns="3">
+            <h:outputLabel value="Nome:"/>
+            <h:inputText id="nome" value="#{itemBean.selectedItem.nome}" required="true">
+                <f:validateLength minimum="3" maximum="255"/>
+            </h:inputText>
+            <h:message for="nome"/>
+
+            <h:outputLabel value="Descrição:"/>
+            <h:inputTextarea id="descricao" value="#{itemBean.selectedItem.descricao}" required="true">
+                <f:validateLength minimum="3" maximum="255"/>
+            </h:inputTextarea>
+            <h:message for="descricao"/>
+
+            <h:outputLabel value="Preço:"/>
+            <h:inputTextarea id="preco" value="#{itemBean.selectedItem.preco}" required="true">
+                <f:validateDoubleRange minimum="0.0"/>
+            </h:inputTextarea>
+            <h:message for="preco"/>
+        </h:panelGrid>
+
+        <h:commandButton value="Inserir" action="#{itemBean.inserir}" rendered="#{not itemBean.editavel}"/>
+        <h:commandButton value="Editar" action="#{itemBean.editar}" rendered="#{itemBean.editavel}"/>
+    </h:form>
+
+    <h:link value="Voltar" outcome="index"/>
+</h:body>
+</html>
