@@ -7,37 +7,48 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
-import dao.ItemDao;
+import dao.ItemDaoImpl;
+import exception.ItemInvalidoException;
 import model.Item;
+import service.ItemService;
+import service.ItemServiceImpl;
 
 @ManagedBean
 @SessionScoped
 public class ItemBean {
 
-	private ItemDao itemDao;
+	private ItemService itemService;
 	private Item selectedItem;
 	private List<Item> itens;
 	
 	private boolean editavel;
 
 	public ItemBean() {
-		itemDao = new ItemDao();
+		itemService = new ItemServiceImpl();
 		selectedItem = new Item();
 		
 		editavel = false;
 		
-		itens = itemDao.listar();
+		itens = itemService.listar();
 	}
 	
 	public String inserir() {
 		selectedItem.setId(itens.size() + 1);
-		itemDao.salvar(selectedItem);
+		try {
+			itemService.salvar(selectedItem);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("Item adicionado com sucesso!"));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+		} catch (ItemInvalidoException e) {
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage(e.getMessage()));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+	        
+			e.printStackTrace();
+		}
 		
-		itens = itemDao.listar();
-		
-		FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage("Item adicionado com sucesso!"));
-        context.getExternalContext().getFlash().setKeepMessages(true);
+		itens = itemService.listar();
         
         selectedItem = new Item();
 		
@@ -53,11 +64,19 @@ public class ItemBean {
 	}
 	
 	public String editar() {
-		itemDao.editar(selectedItem, itens.indexOf(itemDao.findById(selectedItem.getId())));
-		
-		FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage("Item editado com sucesso!"));
-        context.getExternalContext().getFlash().setKeepMessages(true);
+		try {
+			itemService.editar(selectedItem, itens.indexOf(itemService.findById(selectedItem.getId())));
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("Item editado com sucesso!"));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+		} catch (ItemInvalidoException e) {			
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage(e.getMessage()));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+	        
+			e.printStackTrace();
+		}
         
         editavel = false;
         selectedItem = new Item();
@@ -66,13 +85,21 @@ public class ItemBean {
 	}
 	
 	public String excluir(Item item) {
-		itemDao.excluir(item);
+		try {
+			itemService.excluir(item);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("Item excluído com sucesso!"));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+		} catch (ItemInvalidoException e) {
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage(e.getMessage()));
+	        context.getExternalContext().getFlash().setKeepMessages(true);
+			
+			e.printStackTrace();
+		}
 		
-		itens = itemDao.listar();
-		
-		FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage("Item excluído com sucesso!"));
-        context.getExternalContext().getFlash().setKeepMessages(true);
+		itens = itemService.listar();
 		
 		return "index";
 	}
